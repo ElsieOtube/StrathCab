@@ -1,0 +1,2 @@
+rootProject.name = "Strath Cab"
+include ':app'
