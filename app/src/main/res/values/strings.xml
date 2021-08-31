@@ -63,7 +63,7 @@
 
     <string name="register">REGISTER</string>
 
-    <string name="registered">Registered</string>
+    <string name="registered">Registration Successful. Please check your email for verification</string>
 
     <string name="request_send">Request send</string>
 
@@ -87,5 +87,6 @@
     <string name="action_settings">Settings</string>
     <string name="place_autocomplete_search_hint">pick-up location</string>
     <string name="place_autocomplete_search_hint2">destination</string>
+    <string name="forgot_password">Forgot password?</string>
 
 </resources>

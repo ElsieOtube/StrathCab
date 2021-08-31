@@ -4,31 +4,32 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-        import android.content.Intent;
-        import androidx.annotation.NonNull;
-        import android.view.View;
-        import android.widget.Button;
-        import android.widget.Toast;
+import android.content.Intent;
+import androidx.annotation.NonNull;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.strathcab.helper.FirebaseHelper;
 import com.example.strathcab.messages.Errors;
 import com.example.strathcab.messages.ShowMessage;
-import com.facebook.AccessToken;
-        import com.facebook.CallbackManager;
-        import com.facebook.FacebookCallback;
-        import com.facebook.FacebookException;
-        import com.facebook.FacebookSdk;
-        import com.facebook.login.LoginManager;
-        import com.facebook.login.LoginResult;
-        import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-        import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-        import com.google.android.gms.common.ConnectionResult;
-        import com.google.android.gms.common.api.GoogleApiClient;
-        import com.google.android.gms.common.api.OptionalPendingResult;
+//import com.facebook.AccessToken;
+//import com.facebook.CallbackManager;
+//import com.facebook.FacebookCallback;
+//import com.facebook.FacebookException;
+//import com.facebook.FacebookSdk;
+//import com.facebook.login.LoginManager;
+//import com.facebook.login.LoginResult;
+//import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+//import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+//import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.OptionalPendingResult;
 
-        import java.util.Arrays;
+import java.util.Arrays;
 
-        import mehdi.sakout.fancybuttons.FancyButton;
+import mehdi.sakout.fancybuttons.FancyButton;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
     private GoogleApiClient googleApiClient;
@@ -39,10 +40,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     //GoogleSignInAccount account;
 
     //facebook
-    CallbackManager mFacebookCallbackManager;
-    LoginManager mLoginManager;
-    AccessToken accessToken = AccessToken.getCurrentAccessToken();
-    boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
+    //CallbackManager mFacebookCallbackManager;
+    //LoginManager mLoginManager;
+    //AccessToken accessToken = AccessToken.getCurrentAccessToken();
+    //boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -162,5 +163,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
+    }
+
+    public void forgotPassword(View view) {
+        Intent forgotPassword = new Intent(LoginActivity.this, ForgotPassword.class);
+        startActivity(forgotPassword);
     }
 }

@@ -9,17 +9,16 @@ import com.example.strathcab.HomeActivity;
 import com.example.strathcab.R;
 import com.example.strathcab.common.Common;
 import com.example.strathcab.model.firebase.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Toast;
 
-import com.facebook.AccessToken;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -157,6 +156,23 @@ public class FirebaseHelper {
                                 user.setPassword(etPassword.getText().toString());
                                 user.setPhone(etPhone.getText().toString());
 
+                                firebaseAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+
+                                        if(task.isSuccessful()){
+                                            Snackbar.make(root, activity.getResources().getString(R.string.registered), Snackbar.LENGTH_SHORT).show();
+                                            //Intent profIntent = new Intent(FirebaseHelper.this, CustomerMap.class);
+                                            //profIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            //startActivity(profIntent);
+                                        }else{
+
+                                        }
+
+                                    }
+                                });
+
+
                                 users.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .setValue(user)
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -266,13 +282,13 @@ public class FirebaseHelper {
                 });
             }
         });
-        alertDialog.setNegativeButton(activity.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+       /* alertDialog.setNegativeButton(activity.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 LoginManager.getInstance().logOut();
                 dialogInterface.dismiss();
             }
-        });
+        });*/
         alertDialog.show();
     }
     public void loginSuccess(){
@@ -282,7 +298,7 @@ public class FirebaseHelper {
         activity.startActivity(new Intent(activity, HomeActivity.class));
         activity.finish();
     }
-    public void registerByGoogleAccount(final GoogleSignInAccount account){
+    /*public void registerByGoogleAccount(final GoogleSignInAccount account){
         final User user=new User();
         users.addValueEventListener(new ValueEventListener() {
             @Override
@@ -298,8 +314,8 @@ public class FirebaseHelper {
 
             }
         });
-    }
-    public void registerByFacebookAccount(){
+    }*/
+   /* public void registerByFacebookAccount(){
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         GraphRequest request = GraphRequest.newMeRequest(
                 accessToken,
@@ -328,5 +344,5 @@ public class FirebaseHelper {
                     }
                 });
         request.executeAsync();
-    }
+    }*/
 }

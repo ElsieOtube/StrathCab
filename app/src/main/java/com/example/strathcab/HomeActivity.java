@@ -13,7 +13,11 @@ import android.os.Bundle;
         import androidx.annotation.NonNull;
         import androidx.annotation.Nullable;
         import androidx.appcompat.app.AlertDialog;
-        import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+import androidx.recyclerview.widget.LinearLayoutManager;
         import androidx.recyclerview.widget.RecyclerView;
         import android.text.Editable;
         import android.text.TextUtils;
@@ -60,10 +64,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessaging;
         import com.google.gson.Gson;
 
-        import com.facebook.AccessToken;
-        import com.facebook.GraphRequest;
-        import com.facebook.GraphResponse;
-        import com.facebook.login.LoginManager;
+
         import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
         import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
         import com.google.android.gms.common.ConnectionResult;
@@ -118,6 +119,9 @@ import com.google.firebase.messaging.FirebaseMessaging;
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         GoogleMap.OnInfoWindowClickListener {
+
+    private NavController navController;
+    private AppBarConfiguration mAppBarConfiguration;
     private ImageView carUberX, carUberBlack;
     private Button btnRequestPickup;
     private Toolbar toolbar;
@@ -127,14 +131,22 @@ public class HomeActivity extends AppCompatActivity
     private RecyclerView rvPickupPlaces, rvDestinationPlaces;
     private GoogleSignInAccount account;
     private SupportMapFragment mapFragment;
+    private DrawerLayout drawer;
+    private ActionBarDrawerToggle toggle;
+    private NavigationView navigationView;
+    private View navigationHeaderView;
+    private TextView tvName, tvStars;
+    private CircleImageView imageAvatar;
 
     private Marker riderMarket, destinationMarker;
     private ArrayList<Marker> driverMarkers=new ArrayList<>();
 
+    private ActionBarDrawerToggle drawerToggle;
+
     //Gooogle
     private GoogleApiClient mGoogleApiClient;
-    AccessToken accessToken = AccessToken.getCurrentAccessToken();
-    boolean isLoggedInFacebook = accessToken != null && !accessToken.isExpired();
+   // AccessToken accessToken = AccessToken.getCurrentAccessToken();
+    //boolean isLoggedInFacebook = accessToken != null && !accessToken.isExpired();
 
     private DatabaseReference driversAvailable;
     private FirebaseStorage storage;
@@ -312,27 +324,39 @@ public class HomeActivity extends AppCompatActivity
     }
 
     public void initDrawer(){
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        drawer = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+
+        mAppBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.nav_profile, R.id.nav_payment, R.id.nav_trip_history)
+                .setOpenableLayout(drawer)
+                .build();
+
+        toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        View navigationHeaderView=navigationView.getHeaderView(0);
-        TextView tvName=(TextView)navigationHeaderView.findViewById(R.id.tvRiderName);
-        TextView tvStars=(TextView)findViewById(R.id.tvStars);
-        CircleImageView imageAvatar=(CircleImageView) navigationHeaderView.findViewById(R.id.imgAvatar);
+        navigationHeaderView=navigationView.getHeaderView(0);
+        tvName=(TextView)navigationHeaderView.findViewById(R.id.tvRiderName);
+        tvStars=(TextView)findViewById(R.id.tvStars);
+        imageAvatar=(CircleImageView) navigationHeaderView.findViewById(R.id.imgAvatar);
+
 
         tvName.setText(Common.currentUser.getName());
         if(Common.currentUser.getRates()!=null &&
                 !TextUtils.isEmpty(Common.currentUser.getRates()))
             tvStars.setText(Common.currentUser.getRates());
 
-        if(isLoggedInFacebook)
-            Picasso.get().load("https://graph.facebook.com/" + Common.userID + "/picture?width=500&height=500").into(imageAvatar);
+        /*if(isLoggedInFacebook)
+            Picasso.get().load("https://graph.facebook.com/" + Common.userID + "/picture?width=500&height=500").into(imageAvatar);*/
         else if(account!=null)
             Picasso.get().load(account.getPhotoUrl()).into(imageAvatar);
         if(Common.currentUser.getAvatarUrl()!=null &&
@@ -490,11 +514,12 @@ public class HomeActivity extends AppCompatActivity
             case R.id.nav_signOut:
                 signOut();
                 break;
+            default:
+                navController.navigate(id);
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-        return true;
+        return false;
     }
 
     private void showTripHistory() {
